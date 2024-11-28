@@ -11,6 +11,15 @@ export interface ProductCardProps {
   onOpenModal: (id: number) => void;
 }
 
+/**
+ * A ProductCard component that displays a product's information.
+ *
+ * @param {ProductCardProps} props
+ * @prop {Object} product - The product to display, with `id`, `title`, `thumbnail`, `price`, and `rating` properties.
+ * @prop {function} onOpenModal - A callback to open the product modal with the product's ID.
+ *
+ * @returns A JSX element representing the product card.
+ */
 const ProductCard = ({ product, onOpenModal }: ProductCardProps) => {
   const { darkMode } = useTheme();
 
