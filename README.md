@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+# E-Commerce Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An e-commerce application built with React, TypeScript, Tailwind CSS, and Vite. This app allows users to browse products, add them to a cart, view the cart, and proceed to checkout. It also features sorting by price and a dark mode toggle.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Product Listing**: Display products with images, descriptions, and prices.
+- **Add to Cart**: Add products to the shopping cart and manage quantities.
+- **Cart Modal**: View the items in the cart, remove products, and proceed to checkout.
+- **Sorting**: Sort products by price (Low to High, High to Low).
+- **Dark Mode**: Toggle between light and dark modes.
+- **Local Storage**: Cart data is stored in local storage to persist even after a page refresh.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: For building the user interface.
+- **TypeScript**: For type safety and improved development experience.
+- **Tailwind CSS**: For styling the application using utility-first classes.
+- **Vite**: A fast and optimized build tool for React applications.
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+To get started with the project, follow these steps:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+1. **Clone the repository**:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+   ```bash
+   git clone https://github.com/mithun522/e-commerce-product-display.git
+2. **Navigate to the directory**:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+   ```bash
+   cd e-commerce-product-display
+3. **Install dependencies**:
+
+   ```bash
+   npm install
+4. **Start the development server**:
+
+   ```bash
+   npm run dev
+
+5. **Open the browser**:
+
+   Navigate to http://localhost:5173 in your browser to see the app in action.
+
+### Features Walkthrough
+
+1. **Product Listing**
+Browse a variety of products with the ability to sort them by price.
+
+2. **Add to Cart**
+Click on the "Add to Cart" button to add a product to your cart. The cart updates with the selected product.
+
+3. **Cart Modal**
+The cart modal shows the products added to the cart. You can view product quantities, remove products, and proceed to checkout.
+
+4. **Sorting**
+Sort products by price with the "Low to High" or "High to Low" options.
+
+5. **Dark Mode**
+Toggle between light and dark themes for a personalized UI experience.

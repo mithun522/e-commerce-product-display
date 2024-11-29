@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { BsTrash, BsX } from "react-icons/bs";
 import { useTheme } from "../context/ThemeProvider";
 import { CartItem } from "./ProductList";
 
@@ -35,6 +36,13 @@ const CartModal = ({ closeModal, onCheckout, setCart }: { closeModal: () => void
   const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
   const handleCheckout = () => {
+
+    if (cart.length === 0) {
+      toast.error("Your cart is empty!");
+      closeModal();
+      return;
+    }
+
     setLocalCart([]);
     setCart([]);
     localStorage.setItem("cart", JSON.stringify([]));
@@ -62,21 +70,28 @@ const CartModal = ({ closeModal, onCheckout, setCart }: { closeModal: () => void
             onClick={closeModal}
             className={`text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100`}
           >
-            ✕
+            <BsX size={24} />
           </button>
         </div>
 
         <div className="space-y-4">
           {cart.map((item) => (
-            <div key={item.id} className="flex justify-between items-center">
-              <span>{item.title} (x{item.quantity})</span>
-              <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-              <button
-                onClick={() => removeOneFromCart(item.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                Remove
-              </button>
+            <div key={item.id} className="flex items-center">
+              <div className="flex-1">
+                <span className="block font-bold">{item.title}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-300">
+                  Quantity: {item.quantity}
+                </span>
+              </div>
+              <div className="flex items-center justify-end">
+                <span className="font-bold text-lg">₹{(item.price * item.quantity).toFixed(2)}</span>
+                <button
+                  onClick={() => removeOneFromCart(item.id)}
+                  className="text-red-500 hover:text-red-700 ml-4"
+                >
+                  <BsTrash size={24} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -87,7 +102,7 @@ const CartModal = ({ closeModal, onCheckout, setCart }: { closeModal: () => void
             onClick={handleCheckout}
             className="bg-blue-500 text-white py-2 px-4 rounded-full"
           >
-            Checkout
+            Proceed to Checkout
           </button>
         </div>
       </div>
