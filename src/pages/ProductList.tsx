@@ -1,44 +1,65 @@
-import { useEffect, useState } from "react";
+// ProductList.tsx
+
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeProvider";
 import CartModal from "./CartModal";
 import ProductCard, { ProductCardProps } from "./ProductCard";
 import ProductDetails from "./ProductDetails";
 
+type Product = ProductCardProps["product"];
+
+// Export the CartItem interface
+export interface CartItem extends Product {
+  quantity: number;
+}
+
 const ProductList = ({ products }: { products: ProductCardProps["product"][] }) => {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null); // null means no sorting
-  const [cart, setCart] = useState<ProductCardProps["product"][]>([]); // Cart state
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(null);
+  const [cart, setCart] = useState<CartItem[]>([]); // State now holds CartItem
   const [isOpenCartModel, setIsOpenCartModel] = useState(false);
   const { darkMode } = useTheme();
 
-  // Load cart from localStorage when the component mounts
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCart(storedCart);
-  }, []);
+  const addToCart = (product: ProductCardProps["product"]) => {
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find((item) => item.id === product.id);
+  
+      if (existingProduct) {
+        // If product is already in the cart, increase the quantity
+        const updatedCart = prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save the updated cart to localStorage
+        return updatedCart;
+      } else {
+        // If product is not in the cart, add it with quantity 1
+        const newCart = [...prevCart, { ...product, quantity: 1 }];
+        localStorage.setItem("cart", JSON.stringify(newCart)); // Save the new cart to localStorage
+        return newCart;
+      }
+    });
+  
+    toast.success("Product added to cart!");
+  };  
 
-  // Add item to cart and store it in localStorage
-  const handleAddToCart = (product: ProductCardProps["product"]) => {
-    const updatedCart = [...cart, product];
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Store updated cart in localStorage
-  };
-
-  const handleOpenModal = (id: number) => {
+  const openModal = (id: number) => {
     setSelectedProductId(id);
   };
 
-  const sortedProducts = sortOrder
-    ? [...products].sort((a, b) =>
-        sortOrder === "asc" ? a.price - b.price : b.price - a.price
-      )
-    : products; // If no sorting, show the original order
-
-  // Handle Checkout
   const handleCheckout = () => {
-    setCart([]); // Clear cart in state
-    localStorage.setItem("cart", JSON.stringify([])); // Clear cart in localStorage
+    toast.success("Proceeding to checkout!");
   };
+
+  const sortedProducts = products.sort((a, b) =>
+    sortOrder === "asc"
+      ? a.price - b.price
+      : sortOrder === "desc"
+        ? b.price - a.price
+        : 0
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -56,8 +77,8 @@ const ProductList = ({ products }: { products: ProductCardProps["product"][] }) 
             <option value="desc">High to Low</option>
           </select>
         </div>
-        {/* Cart Link */}
-        <div className="flex justify-end mb-4 relative">
+        {/* Cart */}
+        <div className="flex items-center justify-end mb-4 relative">
           <button
             onClick={() => setIsOpenCartModel(true)}
             className="text-black px-4 py-2 rounded"
@@ -72,28 +93,24 @@ const ProductList = ({ products }: { products: ProductCardProps["product"][] }) 
         </div>
       </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {sortedProducts.map((product) => (
-          <div key={product.id}>
-            <ProductCard product={product} onOpenModal={handleOpenModal} onAddToCart={handleAddToCart} />
-          </div>
+          <ProductCard
+            key={product.id}
+            product={product}
+            onOpenModal={openModal}
+            onAddToCart={addToCart}
+          />
         ))}
       </div>
 
-      {/* Modal */}
-      {selectedProductId && (
-        <ProductDetails
-          id={selectedProductId}
-          closeModal={() => setSelectedProductId(null)} // Callback to reset ID
-        />
-      )}
+      {selectedProductId && <ProductDetails closeModal={() => setSelectedProductId(null)} id={selectedProductId} />}
 
-      {/* Cart Modal */}
       {isOpenCartModel && (
-        <CartModal
-          closeModal={() => setIsOpenCartModel(false)}
-          onCheckout={handleCheckout}
+        <CartModal 
+          closeModal={() => setIsOpenCartModel(false)} 
+          onCheckout={handleCheckout} 
+          setCart={setCart} // Passing setCart here
         />
       )}
     </div>
