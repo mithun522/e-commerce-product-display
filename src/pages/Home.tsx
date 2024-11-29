@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa"; // Importing the up arrow icon
 import Navbar from "./Navbar";
@@ -27,7 +27,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get<AxiosResponse<{ products: Product[] }>>("https://dummyjson.com/products")
+      .get<{ products: Product[] }>("https://dummyjson.com/products")
       .then((response) => {
         setProducts(response.data.products);
         setFilteredProducts(response.data.products);
