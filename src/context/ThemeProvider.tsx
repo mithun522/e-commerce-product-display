@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface ThemeContextProps {
   darkMode: boolean;
@@ -17,16 +17,34 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [darkMode, setDarkMode] = useState<boolean>(false);
 
+  // Load the saved theme preference from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("darkMode");
+    if (savedTheme === "true") {
+      setDarkMode(true);
+      document.body.setAttribute("data-theme", "dark");
+    } else {
+      document.body.setAttribute("data-theme", "light");
+    }
+  }, []);
+
   /**
-   * Toggles the dark mode state and updates the document body's class list
+   * Toggles the dark mode state and updates the document body's data-theme
    * to apply the corresponding CSS styles.
    *
    * @returns {void}
    */
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => {
-      document.body.classList.toggle("dark", !prevMode);
-      return !prevMode;
+      const newMode = !prevMode;
+      if (newMode) {
+        document.body.setAttribute("data-theme", "dark");
+        localStorage.setItem("darkMode", "true");
+      } else {
+        document.body.setAttribute("data-theme", "light");
+        localStorage.setItem("darkMode", "false");
+      }
+      return newMode;
     });
   };
 

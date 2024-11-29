@@ -53,13 +53,11 @@ const ProductList = ({ products }: { products: ProductCardProps["product"][] }) 
     toast.success("Proceeding to checkout!");
   };
 
-  const sortedProducts = products.sort((a, b) =>
-    sortOrder === "asc"
-      ? a.price - b.price
-      : sortOrder === "desc"
-        ? b.price - a.price
-        : 0
-  );
+  const sortedProducts = sortOrder
+  ? [...products].sort((a, b) =>
+      sortOrder === "asc" ? a.price - b.price : b.price - a.price
+    )
+  : products; // Keep original order if sortOrder is null
 
   return (
     <div className="container mx-auto p-4">
